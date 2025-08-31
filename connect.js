@@ -2,9 +2,8 @@
 * Title: Assignment 4
 * Description: Incorporating Business Logic Using MySQL Stored Procedures
 * Name: Kylie Hoang
-* Date:11/17/23
-* Section:002
 */
+
 const mysql = require('mysql2');
 const http = require('http');
 const {URL} = require('url');
@@ -412,4 +411,5 @@ const serverHandler = function(req, res){
 const server = http.createServer(serverHandler);
 server.listen(3000,()=>{
     console.log('Server listenning at port 3000');
+
 });
