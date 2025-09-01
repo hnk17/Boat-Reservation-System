@@ -1,0 +1,88 @@
+DELIMITER $$
+CREATE PROCEDURE AddSailors (IN name VARCHAR(255), IN bdate DATE, IN rte INT, OUT msg VARCHAR(255)) 
+BEGIN 
+	DECLARE age INTEGER; 
+	SET age = floor(datediff(curdate(), bdate)/365); 
+	IF age >=24
+        THEN INSERT INTO SAILORS (S_name, B_date, Rate) VALUES(name,bdate,rte); 
+        SET msg = "Sailor is added"; 
+        ELSE SET msg = "Sailor's age is below allowed age"; 
+        END IF;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE AddReservations( IN sailID INTEGER, IN boatID INTEGER, IN dy DATE, OUT msg VARCHAR(255)) 
+ BEGIN
+	DECLARE sailRate INT;
+    DECLARE boatType VARCHAR(50);
+
+    SELECT Rate INTO sailRate FROM Sailors WHERE S_Id = sailID;
+    SELECT Type INTO boatType FROM Boats WHERE B_Id = boatID;
+	IF boatType = 'Fishing' AND sailorRate > 7
+        THEN INSERT INTO Reserves (S_Id, B_Id, Day) VALUES (sailID, boatID, dy);
+        SET msg = 'Reservation successful';  
+
+        ELSEIF boatType = 'Sailboat' AND sailRate > 5 
+        THEN INSERT INTO Reserves (S_Id, B_Id, Day) VALUES (sailID, boatID, dy);
+        SET msg = 'Reservation successful';  
+
+        ELSEIF boatType = 'Bass boat' AND sailorRate <= 2 
+        THEN INSERT INTO Reserves (S_Id, B_Id, Day) VALUES (sailID, boatID, dy);
+        SET msg = 'Reservation successful';
+
+        ELSE SET msg = 'Reservation can not be done for required boat - Sailor rate is low';
+
+	END IF; 
+	END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetReserveBoatsBefore(IN inputDate DATE) 
+BEGIN
+        SELECT Boats.B_Id, Boats.B_name
+        FROM Reserves
+        JOIN Boats ON Reserves.B_Id = Boats.B_Id
+        WHERE Reserves.Day < inputDate;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE GetReserveBoatsAfter(IN inputDate DATE) 
+BEGIN
+        SELECT Boats.B_Id, Boats.B_name
+        FROM Reserves
+        JOIN Boats ON Reserves.B_Id = Boats.B_Id
+        WHERE Reserves.Day > inputDate;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE GetBoatsByType(IN type VARCHAR(25))
+BEGIN
+    SELECT B_Id, B_name
+    FROM Boats
+    WHERE Type = boatType;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE CountBoatsByType(IN inputType VARCHAR(25), OUT cnt INTEGER)
+BEGIN
+    SELECT COUNT(*) INTO cnt
+    FROM Boats
+    WHERE Type = inputType;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE GetSailorsOlder(IN inputAge INT)
+BEGIN
+    SELECT *
+    FROM Sailors
+    WHERE DATEDIFF(curdate(), B_date) / 365 > inputAge;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE GetSailorsYounger(IN inputAge INT)
+BEGIN
+    SELECT * 
+    FROM Sailors
+    WHERE DATEDIFF(CURDATE(), B_date) / 365 < inputAge;
+END $$
