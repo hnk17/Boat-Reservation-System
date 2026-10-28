@@ -1,5 +1,4 @@
 /*
-* Title: Assignment 4
 * Description: Incorporating Business Logic Using MySQL Stored Procedures
 * Name: Kylie Hoang
 */
